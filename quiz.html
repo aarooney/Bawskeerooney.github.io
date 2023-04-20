@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Quiz Application</title>
+</head>
+<body>
+Q1. What is the capital of Italy<br>
+<input type="radio" name="question1" id="correct1">Rome <br>
+<input type="radio" name="question1">Florence <br>
+<input type="radio" name="question1">Naples <br>
+<input type="radio" name="question1">Sydney <br>
+
+Q2. What pasta use guanciale?<br>
+<input type="radio" name="question2" >Carbonara <br>
+<input type="radio" name="question2">Pesto Pasta <br>
+<input type="radio" name="question2" id="correct2">Spaghetti <br>
+<input type="radio" name="question2">What's Guanciale? <br>
+
+<!--
+Q1. What is 28+3?<br>
+<input type="radio" name="question3" >15 <br>
+<input type="radio" name="question3"id="correct3">31 <br>
+<input type="radio" name="question3">10 <br>
+<input type="radio" name="question3">19 <br>
+-->
+
+<input type="submit" name="submit" value="SubmitQuiz" onClick="result()">
+<script type="text/javascript">
+function result()
+{
+	var score=0;
+	if(document.getElementById('correct1').checked)
+		{	score++;
+		}
+	if(document.getElementById('correct2').checked)
+		{	score++;
+		}
+	if(document.getElementById('correct3').checked)
+		{	score++;
+		}
+ alert("Your score is:"+score);
+ // to print on browser
+ // document.write("Your score is:"+score);
+}
+</script>
+
+</body>
+</html>
