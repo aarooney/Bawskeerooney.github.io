@@ -1,0 +1,206 @@
+
+<HTML><HEAD>
+<TITLE>matching game</TITLE>
+<!-- copyright 2000 dot lestar -->
+<style>
+body	{font-family:Arial, Helvetica, sans-serif; color:#96C;  }
+h1	{font-family:"Arial Black", Gadget, sans-serif; color:#96C; letter-spacing:15px }
+
+</style>
+<script>
+
+// declares an array that will be used to store the hidden images
+imageArray = new Array();
+// decares an array that will be used to store the random numbers as they are generated
+usedNumbers = new Array();
+// variable that stores the card number of the previous card clicked
+var previousCard;
+// actually this variable is not used in any of the functions
+var cardnumber;
+var cardSwitch = 1 ;
+var y = 0
+var whiteImage = new Image;
+    whiteImage.src = "white.gif";
+var blueImage = new Image;
+    blueImage.src = "cardBack.gif";
+
+/* This code is called when the page is loaded. The for loop is used to
+   fill the image array with imagesit calls the generate number function */
+
+for (i = 0; i < 36; i++)
+	{
+	imageNumber_1 = generateNumber();
+	var d = imageNumber_1 * 0.5;
+	var e = Math.ceil (d);
+	
+	// Adds a field to the array and then loads the image into the field. This pre caches the files
+	imageArray[i] = new Image();
+	//imageArray[i].src = "flowers/image" + e + ".png";
+	//imageArray[i].src = "shrek.png";
+	imageArray[i].src = "leaders/image" + e + ".png";
+	}
+	
+// Generates unique and random numbers between 0 and 37 
+	
+function generateNumber()
+	{
+
+	var imageNumber_2 = Math.ceil (Math.random() * 36);
+	
+	// tells the script how many numbers are currently stored in the array of used numbers
+	arraySize = usedNumbers.length;
+	
+	//If the array is empty the imageNumber is returned (there are not repeates yet)
+	if (arraySize <= 0 )
+		{
+		usedNumbers[y] = imageNumber_2;
+		y++;
+		return(imageNumber_2)
+		}
+	else
+	{
+	
+	/* if the array is not empty then the new number is compared with the numbers already 
+	   used to see if it is unique if it is unique then the number is returned to the calling function 
+	   if the number is a duplicate then the generateNumber function is called again  */ 
+	
+	for (j = 0; j < arraySize; j++)
+		{
+		if ( parseInt(imageNumber_2) == parseInt(usedNumbers[j]))
+			{
+			return(generateNumber());
+			}		
+		}		
+		usedNumbers[y] = imageNumber_2;
+		y++;
+		return (imageNumber_2);
+	}
+	}
+
+/* This function is called when the user clicks a card. 
+   It "flips the card over" revealing the hidden image
+   It determines if it is the first card or the second card turned
+   If it is the second card then it compares the two cards to see if they match
+   If they match it turns them white
+   If they don't match it turns them back to blue */
+
+function flipCard(cardnumber)
+	{
+	//alert(document.images[cardnumber].src)
+	if (document.images[cardnumber].src == blueImage.src)
+	{
+	
+	document.images[cardnumber].src = imageArray[cardnumber].src
+	
+	
+	//Checks to see if this is the second card if it is then it compares card sources to see if they are the same
+	if (cardSwitch == 2)
+		{
+		cardSwitch = 1;
+		// If the cards match calls the remove card function
+		if (document.images[cardnumber].src == document.images[previousCard].src)
+			{
+			// calls the fucntion removeCards 500 miliseconds in the future --- its a time
+			setTimeout ("removeCards(" + cardnumber +"," +  previousCard + ")",500);
+			
+
+			}
+		// if the cards don't match then it calls the changeBack function
+		else
+			{
+			// calls the fucntion changeback 500 miliseconds in the future --- its a timer
+			setTimeout ("changeBack(" + cardnumber +"," +  previousCard + ")",500);
+			}
+		
+		}
+	else
+		{
+		cardSwitch++
+		previousCard = cardnumber
+		}
+	}
+	}
+	
+// sets the image source of the cards to white.gif
+//card numbers are passed from calling function
+function  removeCards(val1,val2)
+	{
+	//document.images[val1].src = "white.gif"
+	//document.images[val2].src = "white.gif"
+	}
+//sets the image source of the cards to cardBack.gif
+//card numbers are passed from calling fucnction
+function changeBack(val3,val4)
+	{
+
+	document.images[val3].src = "cardBack.gif"
+	document.images[val4].src = "cardBack.gif"
+	}
+
+function closeWindow() {
+	window.opener.focus();
+	window.close();
+}
+
+</script>
+</HEAD>
+<BODY BGCOLOR="#333333">
+
+<form name=form1>
+  <table border=0 cellpadding=5 align="center">
+
+<tr>
+	<td><a href="JavaScript:flipCard('0')"><IMG SRC="cardBack.gif" name="block_1" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('1')"><IMG SRC="cardBack.gif" name="block_2" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('2')"><IMG SRC="cardBack.gif" name="block_3" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('3')"><IMG SRC="cardBack.gif" name="block_4" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('4')"><IMG SRC="cardBack.gif" name="block_5" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('5')"><IMG SRC="cardBack.gif" name="block_6" WIDTH="100" HEIGHT="100" border=0></a>
+<tr>
+	<td><a href="JavaScript:flipCard('6')"><IMG SRC="cardBack.gif" name="block_7" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('7')"><IMG SRC="cardBack.gif" name="block_8" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('8')"><IMG SRC="cardBack.gif" name="block_9" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('9')"><IMG SRC="cardBack.gif" name="block_10" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('10')"><IMG SRC="cardBack.gif" name="block_11" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('11')"><IMG SRC="cardBack.gif" name="block_12" WIDTH="100" HEIGHT="100" border=0></a></td>
+</tr>
+<tr>
+	<td><a href="JavaScript:flipCard('12')"><IMG SRC="cardBack.gif" name="block_13" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('13')"><IMG SRC="cardBack.gif" name="block_14" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('14')"><IMG SRC="cardBack.gif" name="block_15" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('15')"><IMG SRC="cardBack.gif" name="block_16" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('16')"><IMG SRC="cardBack.gif" name="block_17" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('17')"><IMG SRC="cardBack.gif" name="block_18" WIDTH="100" HEIGHT="100" border=0></a></td>
+</tr>
+<tr>
+	<td><a href="JavaScript:flipCard('18')"><IMG SRC="cardBack.gif" name="block_19" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('19')"><IMG SRC="cardBack.gif" name="block_20" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('20')"><IMG SRC="cardBack.gif" name="block_21" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('21')"><IMG SRC="cardBack.gif" name="block_22" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('22')"><IMG SRC="cardBack.gif" name="block_23" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('23')"><IMG SRC="cardBack.gif" name="block_24" WIDTH="100" HEIGHT="100" border=0></a></td>
+</tr>
+<tr>
+	<td><a href="JavaScript:flipCard('24')"><IMG SRC="cardBack.gif" name="block_25" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('25')"><IMG SRC="cardBack.gif" name="block_26" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('26')"><IMG SRC="cardBack.gif" name="block_27" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('27')"><IMG SRC="cardBack.gif" name="block_28" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('28')"><IMG SRC="cardBack.gif" name="block_29" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('29')"><IMG SRC="cardBack.gif" name="block_30" WIDTH="100" HEIGHT="100" border=0></a></td>
+</tr>
+<tr>
+	<td><a href="JavaScript:flipCard('30')"><IMG SRC="cardBack.gif" name="block_31" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('31')"><IMG SRC="cardBack.gif" name="block_32" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('32')"><IMG SRC="cardBack.gif" name="block_33" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('33')"><IMG SRC="cardBack.gif" name="block_34" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('34')"><IMG SRC="cardBack.gif" name="block_35" WIDTH="100" HEIGHT="100" border=0></a></td>
+	<td><a href="JavaScript:flipCard('35')"><IMG SRC="cardBack.gif" name="block_36" WIDTH="100" HEIGHT="100" border=0></a></td>
+</tr>
+<tr><td colspan="8" align="center">&copy; Aidan Rooney</td></tr>
+</table>
+
+</center>
+
+</form>
+</BODY>
+</HTML>
