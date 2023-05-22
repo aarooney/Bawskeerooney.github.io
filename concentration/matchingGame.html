@@ -1,0 +1,257 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>The Matching Game</title>
+<!--Aidan Rooney 2023-->
+<style>
+body {
+     font-family: Arial, Helvetica, sans-serif;
+     color: #96C;
+}
+h1 {
+     font-family: "Arial Black", Gadget, sans-serif;
+     color: #96C;
+     letter-spacing: 15px
+}
+     .aCard {
+          width: 100px;
+          height: 100px;
+     }
+     /* AIDAN Adjust the scale value to your preference.  When mouse hovers over cell it increases in size */
+     .enlarge-image:hover {
+          transform: scale(1.2);
+     }
+     /*AIDAN container and number to format the count down timer */   
+     .container {
+          position: absolute;
+          top: 50%;
+          left: 12%;
+          transform: translate(-50%, -50%);
+          width: 200px;
+          height: 200px;
+          background-color: #f1f1f1;
+     }
+     .number {
+          font-family: Arial, sans-serif;
+          font-size: 48px;
+          font-weight: bold;
+          color: #333333;
+          bottom: 50%;
+          right: 50%;
+}
+</style>
+<script>
+     // declares an array that will be used to store the hidden images
+     let imageArray = new Array();
+     // decares an array that will be used to store the random numbers as they are generated
+     let usedNumbers = new Array();
+     // variable that stores the card number of the previous card clicked
+     var previousCard;
+     var cardCounter = 0;
+     var cardnumber;
+     var cardSwitch = 1 ;
+     var y = 0
+     var whiteImage = new Image;
+         whiteImage.src = "white.gif";
+     var blueImage = new Image;
+         blueImage.src = "blue.gif";
+     //AIDANCOMMENTS timer initializer
+     var timeUntilEnd = 100;
+     /*AIDANCOMMENTS Generates 100 setTimeout().  Each waits 1 second longer to callback updateTimer.  This results
+      in decrementer our counter from 100-0*/
+     for (let i = 0; i < 100000; i+= 1000)
+     {
+          setTimeout(updateTimer, i)
+     }
+     //AIDANCOMMENTS Another setTimeOut() 100 second delay until refreshpage() is called and entire program is reset
+     setTimeout(refreshPage, 100000);
+     //AIDANCOMMENTS Helper Function to refresh page
+     function refreshPage() {
+          location.reload();
+          alert("You have failed the game.  Wah Wah.  Please try again")
+
+     }
+     //AIDANCOMMENTS Helper Function to Update timer based on timer being decremented
+     function updateTimer()
+     {
+          timeUntilEnd--;
+          document.getElementById("timeUntilEnd").textContent = timeUntilEnd;
+     }
+         /* This code is called when the page is loaded. The for loop is used to
+   fill the image array with images. It calls the generate number function */
+   function loadDeck() {
+     for (i = 0; i < 36; i++)
+          {
+          imageNumber = generateNumber();
+          var d = imageNumber * 0.5;
+          var e = Math.ceil (d);
+
+          // Adds a field to the array and then loads the image into the field. This pre caches the files
+          imageArray[i] = new Image();
+          imageArray[i].src = "leaders/image" + e + ".png";
+          }
+     }
+// Generates unique and random numbers between 0 and 37 
+function generateNumber(){
+	var imageNumberX = Math.ceil (Math.random() * 36);
+
+	// tells the script how many numbers are currently stored in the array of used numbers
+	arraySize = usedNumbers.length;
+	
+	//If the array is empty the imageNumber is returned (there are no repeates yet)
+	if (arraySize <= 0 ) {
+		usedNumbers[y] = imageNumberX;
+		y++;
+		return(imageNumberX)
+     } else {
+	
+	/* if the array is not empty then the new number is compared with the numbers already used to see if it is unique if it is unique then the number is returned to the calling function if the number is a duplicate then the generateNumber function is called again  */ 
+	
+          for (j = 0; j < arraySize; j++){
+               if ( parseInt(imageNumberX) == parseInt(usedNumbers[j])) {
+                    return(generateNumber());
+                    }		
+               }		
+               usedNumbers[y] = imageNumberX;
+               y++;
+               return (imageNumberX);
+          }
+	}
+
+/* This function is called when the user clicks a card. 
+   It "flips the card over" revealing the hidden image
+   It determines if it is the first card or the second card turned
+   If it is the second card then it compares the two cards to see if they match
+   If they match it turns them white
+   If they don't match it turns them back to blue */
+
+function flipCard(cardnumber) {
+	
+     
+
+    // Set a timeout to refresh the page after 100 seconds (100,000 milliseconds)
+   
+     
+     
+     
+     
+     if (document.images[cardnumber].src == blueImage.src) {
+	    document.images[cardnumber].src = imageArray[cardnumber].src
+	
+          //Checks to see if this is the second card if it is then it compares card sources to see if they are the same
+          if (cardSwitch == 2) {
+               cardSwitch = 1;
+               // If the cards match calls the remove card function
+               if (document.images[cardnumber].src == document.images[previousCard].src) {
+                    /*AIDAN Counter to keep track of cards.  Need this variabled to change sounds played depending 
+                    on how many cards have been matched*/
+                    cardCounter = cardCounter + 1
+                    //Different Sounds based on if 1 card, multiples of 3 cards (streak), or all cards have been matched.  
+                    if (cardCounter == 18)
+                    {
+                         var audio = new Audio("finalvictory.mp3")
+                    }
+                    else if (cardCounter % 3 ==  0)
+                    {
+                         var audio = new Audio("crowdcheering.mp3")                  
+                    }
+                    else
+                    {
+                         var audio = new Audio("coin.mp3");
+                         // Play the audio  
+                    }
+                    audio.play();
+                    // calls the fucntion removeCards 500 miliseconds in the future --- its a time
+                    setTimeout ("removeCards(" + cardnumber +"," +  previousCard + ")",500);
+                    }  else {
+                    // If cards don't match calls the fucntion changeback 500 miliseconds in the future --- its a timer
+                    setTimeout ("changeBack(" + cardnumber +"," +  previousCard + ")",500);
+                    }
+          } else {
+               cardSwitch++
+               previousCard = cardnumber
+               }
+	    }
+	}
+// sets the image source of the cards to white.gif
+//card numbers are passed from calling function
+function  removeCards(val1,val2)
+	{
+	document.images[val1].src = "white.gif"
+	document.images[val2].src = "white.gif"
+	}	
+
+//sets the image source of the cards to blue.gif
+//card numbers are passed from calling fucnction
+function changeBack(val3,val4) {
+	document.images[val3].src = "blue.gif"
+	document.images[val4].src = "blue.gif"
+	}
+
+function closeWindow() {
+	window.opener.focus();
+	window.close();
+}
+
+</script>
+</head>
+ <!-- AIDANCOMMENTS New Divider created to contain the countdown clock -->
+<div class="container">
+     <p>You have </p>
+     <span id= "timeUntilEnd">Timer Has: </span>
+     <p>Seconds left until you lose the game!</p>
+   </div>
+<body onLoad="loadDeck()">
+<form name="form1">
+     <table border="0" cellpadding="5" align="center">
+          <tr>
+               <!--AIDANCOMMENTS Added class so cells can be enlarged when hovered above with a mouse-->
+               <td><a href="JavaScript:flipCard('0')"><img src="blue.gif" alt="Card Back" name="block_1" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('1')"><img src="blue.gif" alt="Card Back" name="block_2" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('2')"><img src="blue.gif" alt="Card Back" name="block_3" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('3')"><img src="blue.gif" alt="Card Back" name="block_4" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('4')"><img src="blue.gif" alt="Card Back" name="block_5" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('5')"><img src="blue.gif" alt="Card Back" name="block_6" class="aCard enlarge-image"></a></td>
+          </tr><tr>
+               <td><a href="JavaScript:flipCard('6')"><img src="blue.gif" alt="Card Back" name="block_7" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('7')"><img src="blue.gif" alt="Card Back" name="block_8" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('8')"><img src="blue.gif" alt="Card Back" name="block_9" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('9')"><img src="blue.gif" alt="Card Back" name="block_10" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('10')"><img src="blue.gif" alt="Card Back" name="block_11" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('11')"><img src="blue.gif" alt="Card Back" name="block_12" class="aCard enlarge-image"></a></td>
+          </tr><tr>
+               <td><a href="JavaScript:flipCard('12')"><img src="blue.gif" alt="Card Back" name="block_13" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('13')"><img src="blue.gif" alt="Card Back" name="block_14" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('14')"><img src="blue.gif" alt="Card Back" name="block_15" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('15')"><img src="blue.gif" alt="Card Back" name="block_16" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('16')"><img src="blue.gif" alt="Card Back" name="block_17" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('17')"><img src="blue.gif" alt="Card Back" name="block_18" class="aCard enlarge-image"></a></td>
+          </tr><tr>
+               <td><a href="JavaScript:flipCard('18')"><img src="blue.gif" alt="Card Back" name="block_19" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('19')"><img src="blue.gif" alt="Card Back" name="block_20" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('20')"><img src="blue.gif" alt="Card Back" name="block_21" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('21')"><img src="blue.gif" alt="Card Back" name="block_22" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('22')"><img src="blue.gif" alt="Card Back" name="block_23" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('23')"><img src="blue.gif" alt="Card Back" name="block_24" class="aCard enlarge-image"></a></td>
+          </tr><tr>
+               <td><a href="JavaScript:flipCard('24')"><img src="blue.gif" alt="Card Back" name="block_25" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('25')"><img src="blue.gif" alt="Card Back" name="block_26" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('26')"><img src="blue.gif" alt="Card Back" name="block_27" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('27')"><img src="blue.gif" alt="Card Back" name="block_28" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('28')"><img src="blue.gif" alt="Card Back" name="block_29" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('29')"><img src="blue.gif" alt="Card Back" name="block_30" class="aCard enlarge-image"></a></td>
+          </tr><tr>
+               <td><a href="JavaScript:flipCard('30')"><img src="blue.gif" alt="Card Back" name="block_31" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('31')"><img src="blue.gif" alt="Card Back" name="block_32" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('32')"><img src="blue.gif" alt="Card Back" name="block_33" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('33')"><img src="blue.gif" alt="Card Back" name="block_34" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('34')"><img src="blue.gif" alt="Card Back" name="block_35" class="aCard enlarge-image"></a></td>
+               <td><a href="JavaScript:flipCard('35')"><img src="blue.gif" alt="Card Back" name="block_36" class="aCard enlarge-image"></a></td>
+          </tr><tr>
+          <td colspan="6"><button value="startOver" onClick="location.reload()">Start Over</button></td></td>
+     </table>
+</form>
+</body>
+
+</html>
